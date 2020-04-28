@@ -1,10 +1,14 @@
 from PySide2 import QtWidgets
+import currency_converter
 
 class App(QtWidgets.QWidget) :
     def __init__(self):
         super().__init__()
+        self.c = currency_converter.CurrencyConverter()
         self.setWindowTitle("Convertisseur de devises")
         self.setup_ui()
+        self.set_default_values()
+        self.setup_connections()
 
     def setup_ui(self):
         self.layout = QtWidgets.QHBoxLayout(self)
@@ -20,8 +24,40 @@ class App(QtWidgets.QWidget) :
         self.layout.addWidget(self.spn_montantConverti)
         self.layout.addWidget(self.btn_inverser)
 
+    def set_default_values(self):
 
-    
+        self.cbb_devisesFrom.addItems(sorted(list(self.c.currencies)))
+        self.cbb_devisesTo.addItems(sorted(list(self.c.currencies)))
+        self.cbb_devisesFrom.setCurrentText("EUR")
+        self.cbb_devisesTo.setCurrentText("EUR")
+
+        self.spn_montant.setRange(1, 10000000)
+        self.spn_montantConverti.setRange(1, 10000000)
+
+        self.spn_montant.setValue(100)
+        self.spn_montantConverti.setValue(100)
+
+
+        self.spn_montant.setRange(1, 10000000)
+        self.spn_montantConverti.setRange(1, 10000000)
+
+
+
+    def setup_connections(self):
+        self.cbb_devisesFrom.activated.connect(self.compute)
+        self.cbb_devisesTo.activated.connect(self.compute)
+        self.spn_montant.valueChanged.connect(self.inverser_devises)
+        self.btn_inverser.clicked.connect(self.inverser_devises)
+
+    def compute(self):
+        montant = self.spn_montant.value()
+        devise_from = self.cbb_devisesFrom.currentText()
+        devise_to = self.cbb_devisesTo.currentText()
+        resultat = self.c.convert(montant, devise_from, devise_to)
+        self.spn_montantConverti.setValue(resultat)
+        
+    def inverser_devises(self):
+        print("Inverser devises")
 
 app = QtWidgets.QApplication([])
 win = App()
