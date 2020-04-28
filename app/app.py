@@ -7,6 +7,7 @@ class App(QtWidgets.QWidget) :
         self.c = currency_converter.CurrencyConverter()
         self.setWindowTitle("Convertisseur de devises")
         self.setup_ui()
+        self.setup_css()
         self.set_default_values()
         self.setup_connections()
 
@@ -70,6 +71,15 @@ class App(QtWidgets.QWidget) :
 
         self.compute()
 
+
+    def setup_css(self):
+        self.setStyleSheet("""
+
+        background-color: rgb(30, 30, 30);
+        color: rgb(240,240,240);
+        border: none;
+
+        """)
 app = QtWidgets.QApplication([])
 win = App()
 win.show()
